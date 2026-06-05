@@ -1,13 +1,13 @@
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// 파이어베이스 인증 및 DB 모듈
+// 파이어베이스 모듈 가져오기
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // ==========================================
-// 1. 파이어베이스 설정 (본인 정보로 치환 필요)
+// 1. 파이어베이스 설정 (본인의 실제 키를 여기에 입력하세요!)
 // ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyDxmONNIEeIz8dYIhkYyl3WcPQIGhkdCq0", // 꼭 실제 키로 변경!
@@ -47,7 +47,6 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.maxPolarAngle = Math.PI / 2 - 0.05;
 
-// 따뜻한 조명과 푸른 달빛 레이어링
 const ambientLight = new THREE.AmbientLight(0xfff2e6, 0.6);
 scene.add(ambientLight);
 
@@ -65,7 +64,6 @@ scene.add(moonLight);
 const roomGroup = new THREE.Group();
 const roomSize = 12;
 
-// 다다미 격자 바닥 깔기
 for(let x = -(roomSize/2 - 1); x <= (roomSize/2 - 1); x += 2) {
     for(let z = -(roomSize/2 - 0.5); z <= (roomSize/2 - 0.5); z += 1) {
         const tatamiGeo = new THREE.BoxGeometry(1.96, 0.08, 0.96);
@@ -77,7 +75,6 @@ for(let x = -(roomSize/2 - 1); x <= (roomSize/2 - 1); x += 2) {
     }
 }
 
-// 전통 격자 쇼지(창호지) 미닫이 벽면 생성기
 function createShojiWall() {
     const wallGroup = new THREE.Group();
     const paper = new THREE.Mesh(new THREE.BoxGeometry(roomSize, 4.5, 0.02), new THREE.MeshStandardMaterial({ color: 0xfaf6ee, roughness: 0.95 }));
@@ -102,13 +99,12 @@ const backWall = createShojiWall(); backWall.position.set(0, 0, -roomSize/2); ro
 const leftWall = createShojiWall(); leftWall.rotation.y = Math.PI / 2; leftWall.position.set(-roomSize/2, 0, 0); roomGroup.add(leftWall);
 scene.add(roomGroup);
 
-// 가구 추적 감지용 투명 바닥
 const floorPlane = new THREE.Mesh(new THREE.PlaneGeometry(roomSize, roomSize), new THREE.MeshBasicMaterial({ visible: false }));
 floorPlane.rotateX(-Math.PI / 2);
 scene.add(floorPlane);
 
 // ==========================================
-// 4. 일본 전통 가구 8종 코드 모델링 데이터
+// 4. 일본 전통 가구 8종 모델링
 // ==========================================
 function createFurniture(type) {
     const group = new THREE.Group();
@@ -160,18 +156,17 @@ function createFurniture(type) {
 }
 
 // ==========================================
-// 5. [편의성 패치] 실시간 프리뷰 고스트 & 조작 시스템
+// 5. 실시간 프리뷰 고스트 & 조작 시스템
 // ==========================================
 let currentSelectedType = 'table';
-let currentRotation = 0; // 라디안 단위 회전각값
+let currentRotation = 0;
 let placedItems = [];
-let selectedItem = null; // 현재 마우스로 선택한 배치완료 가구 오프셋
-let previewGroup = null; // 실시간 반투명 가구 고스트
+let selectedItem = null;
+let previewGroup = null;
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-// 반투명 미리보기 모델 생성 갱신
 function updatePreviewObject() {
     if (previewGroup) scene.remove(previewGroup);
     
@@ -180,7 +175,7 @@ function updatePreviewObject() {
         if (child.isMesh) {
             child.material = child.material.clone();
             child.material.transparent = true;
-            child.material.opacity = 0.45; // 반투명 설정
+            child.material.opacity = 0.45;
         }
     });
     previewGroup.rotation.y = currentRotation;
@@ -188,20 +183,17 @@ function updatePreviewObject() {
 }
 updatePreviewObject();
 
-// 가구 변경 시 프리뷰 교체
 document.querySelectorAll('.btn-item').forEach(button => {
     button.addEventListener('click', (e) => {
         document.querySelectorAll('.btn-item').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         currentSelectedType = e.target.getAttribute('data-item');
         
-        // 개별 가구 선택 상태 해제
         deselectItem();
         updatePreviewObject();
     });
 });
 
-// 마우스 움직임에 반응하는 고스트 무브 및 그리드 스냅 (0.5m 단위 정렬)
 window.addEventListener('pointermove', (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -211,8 +203,6 @@ window.addEventListener('pointermove', (event) => {
 
     if (intersects.length > 0 && previewGroup) {
         const p = intersects[0].point;
-        
-        // 0.5미터 단위 자석 스냅 공식 적용
         const snapX = Math.round(p.x / 0.5) * 0.5;
         const snapZ = Math.round(p.z / 0.5) * 0.5;
 
@@ -235,15 +225,14 @@ let pointerDownTime = 0;
 function onPointerDown(event) {
     if(event.target.closest('#ui-container')) return;
     pointerDownTime = performance.now();
-    window.addEventListener('pointerup', (e) => onPointerUp(e), { once: true });
+    window.addEventListener('pointerup', onPointerUp, { once: true });
 }
 
 function onPointerUp(event) {
-    if (performance.now() - pointerDownTime > 200) return; // 드래그 회전 시 작동 무시
+    if (performance.now() - pointerDownTime > 200) return;
 
     raycaster.setFromCamera(mouse, camera);
     
-    // 편의성: 배치된 가구를 먼저 클릭했는지 여부 검사
     const allMeshes = [];
     placedItems.forEach(item => {
         item.mesh.traverse(child => { if(child.isMesh) { child.userData.parentItem = item; allMeshes.push(child); } });
@@ -252,11 +241,9 @@ function onPointerUp(event) {
     const clickIntersects = raycaster.intersectObjects(allMeshes);
 
     if (clickIntersects.length > 0) {
-        // 이미 깔린 가구를 클릭했을 때 -> 개별 가구 선택 모드 진입
         const clickedItem = clickIntersects[0].object.userData.parentItem;
         selectItem(clickedItem);
     } else {
-        // 바닥을 클릭했을 때 -> 신규 가구 배치
         const floorIntersects = raycaster.intersectObject(floorPlane);
         if (floorIntersects.length > 0) {
             const p = floorIntersects[0].point;
@@ -280,7 +267,6 @@ function placeFurnitureElement(type, x, z, rotY) {
     placedItems.push({ mesh: furniture, type: type, x: x, z: z, rotationY: rotY });
 }
 
-// 가구 선택 및 외곽 이펙트 우회용 발광 표현
 function selectItem(item) {
     deselectItem();
     selectedItem = item;
@@ -288,14 +274,13 @@ function selectItem(item) {
     selectedItem.mesh.traverse(child => {
         if(child.isMesh) {
             child.material.userData.oldColor = child.material.color.getHex();
-            child.material.color.setHex(0xffaaaa); // 선택된 오브젝트를 붉은 빛으로 강조 표시
+            child.material.color.setHex(0xffaaaa);
         }
     });
 
-    // 편집 UI 표출
     document.getElementById('selected-control-panel').style.display = 'block';
     document.getElementById('selected-item-name').innerText = `선택됨: ${getKoreanName(item.type)}`;
-    if (previewGroup) previewGroup.visible = false; // 선택 중에는 신규 배치용 고스트를 잠시 숨김
+    if (previewGroup) previewGroup.visible = false;
 }
 
 function deselectItem() {
@@ -316,9 +301,6 @@ function getKoreanName(type) {
     return mapping[type] || type;
 }
 
-// ==========================================
-// 7. 가구 조작 로직 (회전 / 삭제 / 단축키)
-// ==========================================
 function rotateAction() {
     if (selectedItem) {
         selectedItem.rotationY += Math.PI / 2;
@@ -337,13 +319,11 @@ function deleteAction() {
     }
 }
 
-// UI 클릭 연동
 document.getElementById('btn-rotate-selected').addEventListener('click', rotateAction);
 document.getElementById('btn-delete-selected').addEventListener('click', deleteAction);
 
-// 키보드 단축키 핸들러 패치
 window.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT') return; // 입력창 칠때는 제외
+    if (e.target.tagName === 'INPUT') return;
     if (e.key === 'r' || e.key === 'R' || e.key === 'ㄱ') rotateAction();
     if (e.key === 'Delete' || e.key === 'Backspace') deleteAction();
 });
@@ -361,14 +341,14 @@ document.getElementById('btn-signup').addEventListener('click', () => {
     const email = emailInput.value; const password = passwordInput.value;
     if(!email || !password) return alert("이메일과 비밀번호를 작성하세요.");
     createUserWithEmailAndPassword(auth, email, password)
-        .then(() => alert("가입 및 로그인에 성공했습니다!"))
-        .catch(err => alert("오류: " + err.message));
+        .then(() => alert("🎉 회원가입에 성공하여 자동 로그인되었습니다!"))
+        .catch(err => alert("회원가입 오류: " + err.message));
 });
 
 document.getElementById('btn-login').addEventListener('click', () => {
     const email = emailInput.value; const password = passwordInput.value;
     signInWithEmailAndPassword(auth, email, password)
-        .then(() => alert("반갑습니다, 로그인되었습니다!"))
+        .then(() => alert("👋 성공적으로 로그인되었습니다!"))
         .catch(err => alert("로그인 실패: " + err.message));
 });
 
@@ -381,25 +361,24 @@ onAuthStateChanged(auth, (user) => {
         currentUser = user;
         loggedOutDiv.style.display = 'none'; loggedInDiv.style.display = 'block';
         userInfoP.innerText = `접속 계정: ${user.email}`;
-        loadUserRoom(user.uid); // 유저 접속 시 자동 데이터 패치
+        loadUserRoom(user.uid);
     } else {
         currentUser = null;
         loggedOutDiv.style.display = 'block'; loggedInDiv.style.display = 'none';
     }
 });
 
-// 영구 DB 클라우드 세이브 및 로드
 document.getElementById('btn-save').addEventListener('click', async () => {
-    if (!currentUser) return alert("저장하려면 먼저 우측 패널에서 로그인을 진행해주세요!");
-    
-    // 개별 저장 스키마 데이터 가공 (회전값 데이터셋 포함 필수)
+    if (!currentUser) return alert("저장하려면 먼저 로그인을 진행해주세요!");
+    if (placedItems.length === 0) return alert("배치된 가구가 없어 저장할 수 없습니다.");
+
     const dataToSave = placedItems.map(item => ({
         type: item.type, x: item.x, z: item.z, rotationY: item.rotationY
     }));
 
     try {
         await set(ref(database, 'user_rooms/' + currentUser.uid), dataToSave);
-        alert("🎉 나만의 일본식 하우스 배치가 실시간 클라우드 DB에 영구 저장되었습니다.");
+        alert("💾 가구 배치가 파이어베이스 클라우드에 영구 저장되었습니다!");
     } catch (error) {
         alert("DB 저장 에러: " + error.message);
     }
@@ -417,18 +396,20 @@ async function loadUserRoom(uid) {
         if (snapshot.exists()) {
             const loadedData = snapshot.val();
             loadedData.forEach(item => {
-                // 저장 데이터에 이전 회전값 백업본 유무 분기 연산 처리
                 const rY = item.rotationY !== undefined ? item.rotationY : 0;
                 placeFurnitureElement(item.type, item.x, item.z, rY);
             });
+            alert("🏯 이전의 방 데이터를 정상적으로 불러왔습니다!");
+        } else {
+            alert("저장된 방 데이터가 없습니다. 첫 배치를 만들고 저장해 보세요!");
         }
     } catch (error) {
-        console.error("클라우드 로드 미스:", error);
+        console.error("데이터 로드 실패:", error);
     }
 }
 
 document.getElementById('btn-clear').addEventListener('click', () => {
-    if(confirm("배치된 가구를 전부 비우시겠습니까?")) { clearAllFurniture(); deselectItem(); }
+    if(confirm("화면의 모든 가구를 비우시겠습니까?")) { clearAllFurniture(); deselectItem(); }
 });
 
 function clearAllFurniture() {
