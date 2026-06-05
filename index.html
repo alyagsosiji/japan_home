@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 방 만들기 (일본식)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <div id="ui-container">
+        <h1>🏯 3D 일본식 방 꾸미기 (확장판)</h1>
+        
+        <div class="menu-section" id="auth-section">
+            <h3>🔐 나만의 방 로그인</h3>
+            <div id="auth-logged-out">
+                <input type="email" id="auth-email" placeholder="이메일 주소">
+                <input type="password" id="auth-password" placeholder="비밀번호">
+                <div class="btn-group">
+                    <button id="btn-login" class="btn-small">로그인</button>
+                    <button id="btn-signup" class="btn-small secondary">회원가입</button>
+                </div>
+            </div>
+            <div id="auth-logged-in" style="display: none;">
+                <p id="user-info">로그인 상태: 계정 정보</p>
+                <button id="btn-logout" class="btn-small delete">로그아웃</button>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h3>🛋️ 전통 가구 및 소품 배치</h3>
+            <div class="grid-menu">
+                <button class="btn-item active" data-item="table">낮은 테이블</button>
+                <button class="btn-item" data-item="cushion">전통 방석</button>
+                <button class="btn-item" data-item="lantern">안돈 조명</button>
+                <button class="btn-item" data-item="bonsai">미니 분재</button>
+                <button class="btn-item" data-item="sakura">벚꽃 화분</button>
+                <button class="btn-item" data-item="katana">카타나 거치대</button>
+                <button class="btn-item" data-item="scroll">수묵화 족자</button>
+                <button class="btn-item" data-item="partition">금박 병풍</button>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h3>💾 데이터 관리</h3>
+            <button id="btn-save" class="btn-action">내 계정에 방 저장하기</button>
+            <button id="btn-load" class="btn-action">내 방 불러오기</button>
+            <button id="btn-clear" class="btn-action delete">화면 초기화</button>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
