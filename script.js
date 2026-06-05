@@ -10,13 +10,14 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 // 1. 파이어베이스 초기화 (본인 정보 입력)
 // ==========================================
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDxmONNIEeIz8dYIhkYyl3WcPQIGhkdCq0",
+  authDomain: "japan-home-make.firebaseapp.com",
+  databaseURL: "https://japan-home-make-default-rtdb.firebaseio.com",
+  projectId: "japan-home-make",
+  storageBucket: "japan-home-make.firebasestorage.app",
+  messagingSenderId: "1001166062274",
+  appId: "1:1001166062274:web:594038d7fca7670463715b",
+  measurementId: "G-6FYE2Y83JV"
 };
 
 const app = initializeApp(firebaseConfig);
