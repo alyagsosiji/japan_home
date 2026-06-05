@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나만의 방 만들기 (일본식)</title>
+    <title>나만의 방 꾸미기 (일본식)</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="canvas-container"></div>
 
     <div id="ui-container">
-        <h1>🏯 3D 일본식 방 꾸미기 (확장판)</h1>
+        <h1>🏯 3D 일본식 방 꾸미기</h1>
         
         <div class="menu-section" id="auth-section">
             <h3>🔐 나만의 방 로그인</h3>
@@ -23,13 +23,14 @@
                 </div>
             </div>
             <div id="auth-logged-in" style="display: none;">
-                <p id="user-info">로그인 상태: 계정 정보</p>
+                <p id="user-info">접속 계정: 로딩 중...</p>
                 <button id="btn-logout" class="btn-small delete">로그아웃</button>
             </div>
         </div>
 
         <div class="menu-section">
-            <h3>🛋️ 전통 가구 및 소품 배치</h3>
+            <h3> Couch 전통 가구 및 소품 배치</h3>
+            <p class="guide-text">💡 가구를 고르고 바닥을 클릭하세요. (단축키: R 회전)</p>
             <div class="grid-menu">
                 <button class="btn-item active" data-item="table">낮은 테이블</button>
                 <button class="btn-item" data-item="cushion">전통 방석</button>
@@ -42,11 +43,20 @@
             </div>
         </div>
 
+        <div class="menu-section" id="selected-control-panel" style="display: none;">
+            <h3 style="border-left-color: #d32f2f;">🛠️ 선택된 가구 편집</h3>
+            <p id="selected-item-name" style="font-weight: bold; color: #d32f2f;">선택된 아이템: 없음</p>
+            <div class="btn-group">
+                <button id="btn-rotate-selected" class="btn-small action-blue">🔄 회전 (R)</button>
+                <button id="btn-delete-selected" class="btn-small delete">🗑️ 개별 삭제 (Del)</button>
+            </div>
+        </div>
+
         <div class="menu-section">
             <h3>💾 데이터 관리</h3>
             <button id="btn-save" class="btn-action">내 계정에 방 저장하기</button>
             <button id="btn-load" class="btn-action">내 방 불러오기</button>
-            <button id="btn-clear" class="btn-action delete">화면 초기화</button>
+            <button id="btn-clear" class="btn-action delete">화면 전체 초기화</button>
         </div>
     </div>
 
