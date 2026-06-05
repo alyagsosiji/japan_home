@@ -10,14 +10,13 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 // 1. 파이어베이스 설정 (본인 정보로 치환 필요)
 // ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyDxmONNIEeIz8dYIhkYyl3WcPQIGhkdCq0",
-  authDomain: "japan-home-make.firebaseapp.com",
-  databaseURL: "https://japan-home-make-default-rtdb.firebaseio.com",
-  projectId: "japan-home-make",
-  storageBucket: "japan-home-make.firebasestorage.app",
-  messagingSenderId: "1001166062274",
-  appId: "1:1001166062274:web:594038d7fca7670463715b",
-  measurementId: "G-6FYE2Y83JV"
+    apiKey: "AIzaSyDxmONNIEeIz8dYIhkYyl3WcPQIGhkdCq0", // 꼭 실제 키로 변경!
+    authDomain: "japan-home-make.firebaseapp.com",
+    databaseURL: "https://japan-home-make-default-rtdb.firebaseio.com",
+    projectId: "japan-home-makeD",
+    storageBucket: "japan-home-make.firebasestorage.app",
+    messagingSenderId: "1001166062274",
+    appId: "1:1001166062274:web:594038d7fca7670463715bD"
 };
 
 const app = initializeApp(firebaseConfig);
